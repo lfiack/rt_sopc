@@ -1,0 +1,4 @@
+svn export --username $USER http://opencores.org/ocsvn/openmsp430/openmsp430/trunk/ openmsp430
+svn export --username $USER http://opencores.org/ocsvn/uart2bus/uart2bus/trunk/ uart2bus
+
+with $USER the name of the account on http://opencores.org/
