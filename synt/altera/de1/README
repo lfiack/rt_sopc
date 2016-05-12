@@ -1,0 +1,4 @@
+Quartus II project of the rt sopc of the Marcel robot for the DE1 board from Terasic.
+
+The FPGA of the DE1 (EP2C20F484C7) is quite old and not supported in recent versions of Quartus II. 
+The most recent version that can build this project is the 13.0sp1.
