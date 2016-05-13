@@ -409,7 +409,11 @@ begin
 	-- RS-232 Port
 	------------------------
 	-- P1.1 (TX) and P2.2 (RX)
-	UART_TXD <= dbg_uart_txd when SW(9) = '0' else hw_uart_txd;
-	dbg_uart_rxd <= UART_RXD when SW(9) = '0' else '0';
-	hw_uart_rxd <= UART_RXD when SW(9) = '1' else '0';
+	UART_TXD <= dbg_uart_txd when SW(0) = '0' else hw_uart_txd;
+	dbg_uart_rxd <= UART_RXD when SW(0) = '0' else '0';
+	hw_uart_rxd <= UART_RXD when SW(0) = '1' else '0';
+
+--	UART_TXD <= dbg_uart_txd;
+--	dbg_uart_rxd <= UART_RXD;
+--	hw_uart_rxd <= '0';
 end architecture rtl;
