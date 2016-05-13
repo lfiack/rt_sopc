@@ -6,7 +6,6 @@ use work.openMSP430_pkg.all;
 use work.omsp_gpio_pkg.all;
 use work.omsp_timerA_pkg.all;
 use work.omsp_ram_pkg.all;
-use work.io_mux_pkg.all;
 
 entity rt_sopc_de1 is
 	port (
@@ -166,37 +165,6 @@ architecture rtl of rt_sopc_de1 is
 	signal ta_cci1a : std_logic;
 	signal ta_cci2a : std_logic;
 	signal taclk : std_logic;
-
--- P1.0/TACLK      I/O pin / Timer_A, clock signal TACLK input
--- P1.1/TA0        I/O pin / Timer_A, capture: CCI0A input, compare: Out0 output
--- P1.2/TA1        I/O pin / Timer_A, capture: CCI1A input, compare: Out1 output
--- P1.3/TA2        I/O pin / Timer_A, capture: CCI2A input, compare: Out2 output
--- P1.4/SMCLK      I/O pin / SMCLK signal output
--- P1.5/TA0        I/O pin / Timer_A, compare: Out0 output
--- P1.6/TA1        I/O pin / Timer_A, compare: Out1 output
--- P1.7/TA2        I/O pin / Timer_A, compare: Out2 output
-	signal p1_io_mux_b_unconnected : std_logic_vector(7 downto 0);
-	signal p1_io_dout : std_logic_vector(7 downto 0);
-	signal p1_io_dout_en : std_logic_vector(7 downto 0);
-	signal p1_io_din : std_logic_vector(7 downto 0);
-
-	signal p1_b_din : std_logic_vector(7 downto 0);
-	signal p1_b_dout : std_logic_vector(7 downto 0);
-	signal p1_b_dout_en : std_logic_vector(7 downto 0);
-
--- P2.0/ACLK       I/O pin / ACLK output
--- P2.1/INCLK      I/O pin / Timer_A, clock signal at INCLK
--- P2.2/TA0        I/O pin / Timer_A, capture: CCI0B input
--- P2.3/TA1        I/O pin / Timer_A, compare: Out1 output
--- P2.4/TA2        I/O pin / Timer_A, compare: Out2 output
-	signal p2_io_mux_b_unconnected : std_logic_vector(7 downto 0);
-	signal p2_io_dout : std_logic_vector(7 downto 0);
-	signal p2_io_dout_en : std_logic_vector(7 downto 0);
-	signal p2_io_din : std_logic_vector(7 downto 0);
-
-	signal p2_b_din : std_logic_vector(7 downto 0);
-	signal p2_b_dout : std_logic_vector(7 downto 0);
-	signal p2_b_dout_en : std_logic_vector(7 downto 0);
 begin
 	-- All inout port turn to tri-state
 	DRAM_DQ <= (others => 'Z');
@@ -357,38 +325,6 @@ begin
 			taclk => taclk
 		);
 
---	timerA_0: omsp_timerA
---		port map(
---			irq_ta0 => irq_ta0,
---			irq_ta1 => irq_ta1,
---			per_dout => per_dout_tA,
-----			ta_out0 => ta_out0,
-----			ta_out0_en => ta_out0_en,
-----			ta_out1 => ta_out1,
-----			ta_out1_en => ta_out1_en,
-----			ta_out2 => ta_out2,
-----			ta_out2_en => ta_out2_en,
---			
---			aclk_en => aclk_en,
---			dbg_freeze => dbg_freeze,
---			inclk => '0',
---			irq_ta0_acc => irq_acc(9),
---			mclk => mclk,
---			per_addr => per_addr,
---			per_din => per_din,
---			per_en => per_en,
---			per_we => per_we,
---			puc_rst => puc_rst,
---			smclk_en => smclk_en,
---			ta_cci0a => '0',
---			ta_cci0b => '0',
---			ta_cci1a => '0',
---			ta_cci1b => '0',
---			ta_cci2a => '0',
---			ta_cci2b => '0',
---			taclk => '0'
---		);
-
 	-- Combine peripheral data buses
 	---------------------------------
 	per_dout <= per_dout_dio or per_dout_tA;
@@ -436,67 +372,12 @@ begin
 	        byteena => not pmem_wen
 		);
 
-	p1_b_din <= p1_io_mux_b_unconnected(7 downto 4) & ta_cci2a & ta_cci1a & ta_cci0a & taclk;
-	p1_b_dout <= ta_out2 & ta_out1 & ta_out0 & (smclk_en and mclk) & ta_out2 & ta_out1 & ta_out0 & '0';
-	p1_b_dout_en <= ta_out2_en & ta_out1_en & ta_out0_en & '1' & ta_out2_en & ta_out1_en & ta_out0_en & '0';
-
-	io_mux_p1: io_mux
-		generic map (
-			WIDTH => 8
-		)
-		port map (
-			a_din => p1_din,
-			a_dout => p1_dout,
-			a_dout_en => p1_dout_en,
-
-			b_din => p1_b_din,
-			b_dout => p1_b_dout,
-			b_dout_en => p1_b_dout_en,
-
-			io_din => p1_io_din,
-			io_dout => p1_io_dout,
-			io_dout_en => p1_io_dout_en,
-			
-			sel => p1_sel
-		);
-
-	p2_b_din <= p2_io_mux_b_unconnected(7 downto 3) & ta_cci0b & inclk & p2_io_mux_b_unconnected(0);
-	p2_b_dout <= "000" & ta_out2 & ta_out1 & "00" & (aclk_en and mclk);
-	p2_b_dout_en <= "000" & ta_out2_en & ta_out1_en & "001";
-
-	io_mux_p2: io_mux
-		generic map (
-			WIDTH => 8
-		)
-		port map (
-			a_din => p2_din,
-			a_dout => p2_dout,
-			a_dout_en => p2_dout_en,
-			
-			b_din => p2_b_din,
-			b_dout => p2_b_dout,
-			b_dout_en => p2_b_dout_en,
-			
-			io_din => p2_io_din,
-			io_dout => p2_io_dout,
-			io_dout_en => p2_io_dout_en,
-			
-			sel => p2_sel
-		);
-
-	p3_din(7 downto 0) <= SW(7 downto 0);
+	p1_din(7 downto 0) <= SW(7 downto 0);
 	LEDR(7 downto 0) <= p3_dout(7 downto 0) and p3_dout_en(7 downto 0);
 
 	-- RS-232 Port
 	------------------------
 	-- P1.1 (TX) and P2.2 (RX)
-	p1_io_din <= (others => '0');
-	p2_io_din(7 downto 3) <= (others => '0');
-	p2_io_din(1 downto 0) <= (others => '0');
-
 	UART_TXD <= dbg_uart_txd;
 	dbg_uart_rxd <= UART_RXD;
 end architecture rtl;
---//
---// GPIO Function selection
---//--------------------------

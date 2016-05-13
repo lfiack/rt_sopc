@@ -517,8 +517,6 @@ set_global_assignment -name VHDL_FILE ./rt_sopc_de1.vhd
 set_global_assignment -name VHDL_FILE ./omsp_ram_pkg.vhd
 set_global_assignment -name QIP_FILE ./ram16x2048.qip
 set_global_assignment -name QIP_FILE ./ram16x512.qip
-set_global_assignment -name VERILOG_FILE ./io_mux.v
-set_global_assignment -name VHDL_FILE ./io_mux_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../rtl/pkg/openMSP430/openMSP430_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../rtl/pkg/openMSP430/omsp_timerA_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../rtl/pkg/openMSP430/omsp_gpio_pkg.vhd
