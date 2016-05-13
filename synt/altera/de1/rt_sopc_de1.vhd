@@ -1,10 +1,12 @@
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 library work;
 use work.openMSP430_pkg.all;
 use work.omsp_gpio_pkg.all;
 use work.omsp_timerA_pkg.all;
+use work.omsp_uart_pkg.all;
 use work.omsp_ram_pkg.all;
 
 entity rt_sopc_de1 is
@@ -165,6 +167,13 @@ architecture rtl of rt_sopc_de1 is
 	signal ta_cci1a : std_logic;
 	signal ta_cci2a : std_logic;
 	signal taclk : std_logic;
+
+	-- Simple UART
+	signal irq_uart_rx : std_logic;
+	signal irq_uart_tx : std_logic;
+	signal per_dout_uart : std_logic_vector(15 downto 0);
+	signal hw_uart_txd : std_logic;
+	signal hw_uart_rxd : std_logic;
 begin
 	-- All inout port turn to tri-state
 	DRAM_DQ <= (others => 'Z');
@@ -325,28 +334,50 @@ begin
 			taclk => taclk
 		);
 
+	uart_0: omsp_uart
+		generic map (
+			-- Register base address (must be aligned to decoder bit width)
+			BASE_ADDR => 15x"0080" -- Should work in VHDL'2008
+--			BASE_ADDR => "000" & x"080" -- Fuck VHDL'95
+		)
+		port map (
+			irq_uart_rx => irq_uart_rx,
+			irq_uart_tx => irq_uart_tx,
+			per_dout => per_dout_uart,
+			uart_txd => hw_uart_txd,
+
+			mclk => mclk,
+			per_addr => per_addr,
+			per_din => per_din,
+			per_en => per_en,
+			per_we => per_we,
+			puc_rst => puc_rst,
+			smclk_en => smclk_en,
+			uart_rxd => hw_uart_rxd
+		);
+
 	-- Combine peripheral data buses
 	---------------------------------
-	per_dout <= per_dout_dio or per_dout_tA;
+	per_dout <= per_dout_dio or per_dout_tA or per_dout_uart;
 
 	-- Assign interrupts
 	---------------------------------
 	nmi <= '0';
 	irq_bus <= 
-		'0' &        -- Vector 13  (0xFFFA)
-		'0' &        -- Vector 12  (0xFFF8)
-		'0' &        -- Vector 11  (0xFFF6)
-		'0' &        -- Vector 10  (0xFFF4) - Watchdog -
-		irq_ta0 &    -- Vector  9  (0xFFF2)
-		irq_ta1 &    -- Vector  8  (0xFFF0)
-		'0' &        -- Vector  7  (0xFFEE)
-		'0' &        -- Vector  6  (0xFFEC)
-		'0' &        -- Vector  5  (0xFFEA)
-		'0' &        -- Vector  4  (0xFFE8)
-		irq_port2 &  -- Vector  3  (0xFFE6)
-		irq_port1 &  -- Vector  2  (0xFFE4)
-		'0' &        -- Vector  1  (0xFFE2)
-		'0';         -- Vector  0  (0xFFE0)
+		'0' &          -- Vector 13  (0xFFFA)
+		'0' &          -- Vector 12  (0xFFF8)
+		'0' &          -- Vector 11  (0xFFF6)
+		'0' &          -- Vector 10  (0xFFF4) - Watchdog -
+		irq_ta0 &      -- Vector  9  (0xFFF2)
+		irq_ta1 &      -- Vector  8  (0xFFF0)
+		irq_uart_rx &  -- Vector  7  (0xFFEE)
+		irq_uart_tx &  -- Vector  6  (0xFFEC)
+		'0' &          -- Vector  5  (0xFFEA)
+		'0' &          -- Vector  4  (0xFFE8)
+		irq_port2 &    -- Vector  3  (0xFFE6)
+		irq_port1 &    -- Vector  2  (0xFFE4)
+		'0' &          -- Vector  1  (0xFFE2)
+		'0';           -- Vector  0  (0xFFE0)
 
 	dmem_wren <= not (dmem_wen(1) and dmem_wen(0));
 	dram: ram16x512
@@ -378,6 +409,7 @@ begin
 	-- RS-232 Port
 	------------------------
 	-- P1.1 (TX) and P2.2 (RX)
-	UART_TXD <= dbg_uart_txd;
-	dbg_uart_rxd <= UART_RXD;
+	UART_TXD <= dbg_uart_txd when SW(9) = '0' else hw_uart_txd;
+	dbg_uart_rxd <= UART_RXD when SW(9) = '0' else '0';
+	hw_uart_rxd <= UART_RXD when SW(9) = '1' else '0';
 end architecture rtl;
