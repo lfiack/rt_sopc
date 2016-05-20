@@ -180,7 +180,15 @@ begin
 	FL_DQ <= (others => 'Z');
 	SD_DAT <= 'Z';
 	I2C_SDAT <= 'Z';
-	GPIO_0 <= (others => 'Z');
+
+	GPIO_0(0) <= ta_out0;
+	GPIO_0(1) <= ta_out0_en;
+	GPIO_0(2) <= ta_out1;
+	GPIO_0(3) <= ta_out1_en;
+	GPIO_0(4) <= ta_out2;
+	GPIO_0(5) <= ta_out2_en;
+
+	GPIO_0(GPIO_0'left downto 0) <= (others => 'Z');
 	GPIO_1 <= (others => 'Z');
 	-- SDRAM blocking
 	DRAM_CS_N <= '1';
