@@ -1,52 +1,11 @@
-#include "omsp_system.h"
-#include "hardware.h"
-#include "cprintf.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
-//--------------------------------------------------//
-//                   Delay function                 //
-//--------------------------------------------------//
-void delay(unsigned int d) {
-   while(d--) {
-      __nop();
-      __nop();
-   }
-}
+#include <serial/cprintf/cprintf.h>
+#include <serial/uart/uart.h>
 
-//--------------------------------------------------//
-//                 tty_putc function                 //
-//            (Send a byte to the UART)             //
-//--------------------------------------------------//
-int tty_putc (int txdata) {
-
-  // Wait until the TX buffer is not full
-  while (UART_STAT & UART_TX_FULL);
-
-  // Write the output character
-  UART_TXD = txdata;
-
-  return 0;
-}
-
-//--------------------------------------------------//
-//        UART RX interrupt service routine         //
-//         (receive a byte from the UART)           //
-//--------------------------------------------------//
-volatile char rxdata;
-
-wakeup interrupt (UART_RX_VECTOR) INT_uart_rx(void) {
-
-  // Read the received data
-  rxdata = UART_RXD;
-
-  // Clear the receive pending flag
-  UART_STAT = UART_RX_PND;
-
-  // Exit the low power mode
-  LPM0_EXIT;
-}
-
+#include <hardware/omsp_system/omsp_system.h>
 
 //--------------------------------------------------//
 // Main function with init an an endless loop that  //
@@ -59,8 +18,6 @@ int main(void) {
     char buf[40];
     int led = 0;
 
-	int i;
-
     WDTCTL = WDTPW | WDTHOLD;           // Init watchdog timer
 
     P3DIR  = 0xff;
@@ -68,11 +25,7 @@ int main(void) {
 
 	P1DIR = 0x00;
 
-    UART_BAUD = BAUD;                   // Init UART
-    UART_CTL  = UART_EN | UART_IEN_RX;
-
-    //    delay(65535);                       // Some delay
-    //delay(65535);
+	uart_init(115200);
 
 	while ((P1IN & 0x01) == 0);
 
@@ -80,6 +33,7 @@ int main(void) {
 
     cprintf("\r\n====== openMSP430 in action ======\r\n");   //say hello
     cprintf("\r\nSimple Line Editor Ready\r\n");
+	cprintf("\r\nBAUD=%d\r\n", (CPU_FREQ_MHZ/115200)-1);
 
     eint();                             // Enable interrupts
 
@@ -97,33 +51,34 @@ int main(void) {
 		    }
 		    P3OUT = (0x01 << led);
 
-            switch (rxdata) {
-                //process RETURN key
-                case '\r':
-                //case '\n':
-                    cprintf("\r\n");    //finish line
-                    buf[pos++] = 0;     //to use cprintf...
-                    cprintf(":%s\r\n", buf);
-                    reading = 0;        //exit read loop
-                    pos = 0;            //reset buffer
-                    break;
-                //backspace
-                case '\b':
-                    if (pos > 0) {      //is there a char to delete?
-                        pos--;          //remove it in buffer
-                        tty_putc('\b');  //go back
-                        tty_putc(' ');   //erase on screen
-                        tty_putc('\b');  //go back
-                    }
-                    break;
-                //other characters
-                default:
-                    //only store characters if buffer has space
-                    if (pos < sizeof(buf)) {
-                        tty_putc(rxdata);     //echo
-                        buf[pos++] = rxdata; //store
-                    }
-            }
-        }
-    }
+			if (uart_available()) {
+				char c = uart_read();
+				switch (c) {
+					//process RETURN key
+					case '\r':
+						//case '\n':
+						cprintf("\r\n");    //finish line
+						buf[pos++] = 0;     //to use cprintf...
+						cprintf(":%s\r\n", buf);
+						reading = 0;        //exit read loop
+						pos = 0;            //reset buffer
+						break;
+						//backspace
+					case '\b':
+						if (pos > 0) {      //is there a char to delete?
+							pos--;          //remove it in buffer
+							cprintf("\b \b");
+						}
+						break;
+						//other characters
+					default:
+						//only store characters if buffer has space
+						if (pos < sizeof(buf)) {
+							cprintf("%c", c);     //echo
+							buf[pos++] = c; //store
+						}
+				}
+			}
+		}
+	}
 }

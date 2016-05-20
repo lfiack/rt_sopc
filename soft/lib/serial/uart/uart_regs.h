@@ -1,6 +1,5 @@
-#ifndef HARDWARE_H
-#define HARDWARE_H
-
+#ifndef __UART_REGS_H__
+#define __UART_REGS_H__
 
 //--------------------------------------------------
 // Hardware UART register address mapping
@@ -42,23 +41,4 @@
 #define UART_TX_VECTOR      (6 *2) // Interrupt vector 6  (0xFFEC)
 #define UART_RX_VECTOR      (7 *2) // Interrupt vector 7  (0xFFEE)
 
-
-//--------------------------------------------------
-// Diverse
-//--------------------------------------------------
-
-// BAUD = (mclk_freq/baudrate)-1
-
-//#define BAUD           2083            //   9600  @20.0MHz
-//#define BAUD           1042            //  19200  @20.0MHz
-//#define BAUD            521            //  38400  @20.0MHz
-//#define BAUD            347            //  57600  @20.0MHz
-//#define BAUD            174            // 115200  @20.0MHz
-//#define BAUD             87            // 230400  @20.0MHz
-
-#define BAUD            209            // 115200  @24.0MHz
-
-
-
-
-#endif //HARDWARE_H
+#endif //__UART_REGS_H__

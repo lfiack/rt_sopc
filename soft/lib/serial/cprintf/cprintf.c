@@ -1,6 +1,8 @@
+#include "cprintf.h"
+
 #include <stdarg.h>
 
-#include "cprintf.h"
+#include <serial/tty_putc/tty_putc.h>
 
 typedef unsigned char byte;
 

@@ -1,12 +1,13 @@
 # makfile configuration
 NAME            = hw_uart
 SRC				= $(wildcard *.c)
-OBJ         	= $(SRC:.c=.o)
+LIB             = $(wildcard ../lib/*/*/*.c)
+OBJ             = $(SRC:.c=.o) $(LIB:.c=.o)
 
-CFLAGS          = -O2 -Wall -g -mcpu=430 -mivcnt=16 -mmpy=16     # Uniarch flags
+CFLAGS          = -O2 -I../lib -Wall -g -mcpu=430 -mivcnt=16 -mmpy=16      # Uniarch flags
 
 # use custom linker script
-LDFLAGS         = -Tlink.ld
+LDFLAGS         = -Tlink.ld -I../lib
 
 #switch the compiler (for the internal make rules)
 CC              = msp430-gcc
@@ -59,7 +60,7 @@ download-uart: all
 	${TOOL_PATH}/openmsp430-loader.tcl -device /dev/ttyUSB0 -baudrate 115200 ${NAME}.elf
 
 clean:
-	rm -f ${NAME} ${NAME}.a43 ${NAME}.lst $(NAME).bin $(NAME).mif $(NAME).elf *.o
+	rm -f ${NAME} ${NAME}.a43 ${NAME}.lst $(NAME).bin $(NAME).mif $(NAME).elf ${OBJ}
 
 #backup archive
 dist:
