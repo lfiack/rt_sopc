@@ -7,6 +7,13 @@ use work.omsp_gpio_pkg.all;
 use work.omsp_timerA_pkg.all;
 use work.omsp_ram_pkg.all;
 use work.io_mux_pkg.all;
+use work.per_template_pkg.all;
+
+--------------------------------------------------------------------------------
+--                                                                            --
+--                          IGNORED FOR THE MOMENT                            --
+--                                                                            --
+--------------------------------------------------------------------------------
 
 entity top is
 	port (
@@ -359,37 +366,22 @@ begin
 			taclk => taclk
 		);
 
---	timerA_0: omsp_timerA
---		port map(
---			irq_ta0 => irq_ta0,
---			irq_ta1 => irq_ta1,
---			per_dout => per_dout_tA,
-----			ta_out0 => ta_out0,
-----			ta_out0_en => ta_out0_en,
-----			ta_out1 => ta_out1,
-----			ta_out1_en => ta_out1_en,
-----			ta_out2 => ta_out2,
-----			ta_out2_en => ta_out2_en,
---			
---			aclk_en => aclk_en,
---			dbg_freeze => dbg_freeze,
---			inclk => '0',
---			irq_ta0_acc => irq_acc(9),
---			mclk => mclk,
---			per_addr => per_addr,
---			per_din => per_din,
---			per_en => per_en,
---			per_we => per_we,
---			puc_rst => puc_rst,
---			smclk_en => smclk_en,
---			ta_cci0a => '0',
---			ta_cci0b => '0',
---			ta_cci1a => '0',
---			ta_cci1b => '0',
---			ta_cci2a => '0',
---			ta_cci2b => '0',
---			taclk => '0'
---		);
+	-- @0x0200 -> 0x0207
+	per_template_0: per_template
+	generic map (
+		-- Register base address (must be aligned to decoder bit width)
+		BASE_ADDR => 15x"0200"
+	)
+	port map (
+		per_dout => per_dout_template,
+	
+		mclk => mclk,
+		per_addr => per_addr,
+		per_din => per_din,
+		per_en => per_en,
+		per_we => per_we,
+		puc_rst => puc_rst
+	);
 
 	-- Combine peripheral data buses
 	---------------------------------

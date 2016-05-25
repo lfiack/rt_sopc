@@ -66,12 +66,14 @@ char * read_uint16(uint16_t * ret, char * buf, int * ok) {
 }
 
 // Write a value in a given register
-int sh_register(char * buf) {
+int sh_reg_write(char * buf) {
 	uint16_t reg;
 	uint16_t val;
 	int ok;
 
 	unsigned int * p;
+
+	cprintf("write\n\r");
 
 	if (buf[1] != ' ' || buf[2] == 0) {
 		cprintf("correct usage:\r\n");
@@ -99,6 +101,37 @@ int sh_register(char * buf) {
 	return 0;
 }
 
+// Read and display the value of a given register
+int sh_reg_read(char * buf) {
+	uint16_t reg;
+	uint16_t val;
+	int ok;
+
+	unsigned int * p;
+
+	cprintf("read\n\r");
+
+	if (buf[1] != ' ' || buf[2] == 0) {
+		cprintf("correct usage:\r\n");
+		cprintf("\t%c REGISTER\r\n", buf[0]);
+		return -1;
+	}
+
+	buf = &buf[2];
+	buf = read_uint16(&reg, buf, &ok);
+	if (ok == 0) {
+		cprintf("Something went terribly wrong\r\n");
+		return -1;
+	}
+
+	p = (unsigned int *)reg;
+	val = *p;
+
+	cprintf("r=%d v=%d\r\n", reg, val);
+
+	return 0;
+}
+
 //--------------------------------------------------//
 // Main function with init an an endless loop that  //
 // is synced with the interrupts trough the         //
@@ -119,7 +152,6 @@ int main(void) {
 
 	uart_init(115200);
 	shell_init();
-	shell_add('r', sh_register);
 
 	while ((P1IN & 0x01) == 0);
 
@@ -128,6 +160,9 @@ int main(void) {
     cprintf("\r\n====== openMSP430 in action ======\r\n");   //say hello
     cprintf("\r\nSimple Line Editor Ready\r\n");
 	cprintf("\r\nBAUD=%d\r\n", (CPU_FREQ_MHZ/115200)-1);
+
+	shell_add('w', sh_reg_write);
+	shell_add('r', sh_reg_read);
 
     eint();                             // Enable interrupts
 
@@ -175,6 +210,6 @@ int main(void) {
 			}
 		}
 
-		shell_exec('r', buf);
+		shell_exec(buf[0], buf);
 	}
 }

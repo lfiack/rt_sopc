@@ -1,0 +1,5 @@
+rtl/top.vhd is DE1 specific and outdated by synt/altera/de1/rt_sopc.vhd
+-> It should be independant on the platform and up to date.
+-> A generic ram should be added to the project for the top to be independant
+
+Add a PWM module with programmable dead band

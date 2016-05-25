@@ -8,6 +8,7 @@ use work.omsp_gpio_pkg.all;
 use work.omsp_timerA_pkg.all;
 use work.omsp_uart_pkg.all;
 use work.omsp_ram_pkg.all;
+use work.per_template_pkg.all;
 
 entity rt_sopc_de1 is
 	port (
@@ -174,6 +175,9 @@ architecture rtl of rt_sopc_de1 is
 	signal per_dout_uart : std_logic_vector(15 downto 0);
 	signal hw_uart_txd : std_logic;
 	signal hw_uart_rxd : std_logic;
+
+	-- Peripheral template
+	signal per_dout_template : std_logic_vector(15 downto 0);
 begin
 	-- All inout port turn to tri-state
 	DRAM_DQ <= (others => 'Z');
@@ -264,6 +268,7 @@ begin
 			wkup => '0'
 		);
 
+	-- @0x0000 -> 0x003F
 	c_gpio_0: omsp_gpio
 		generic map (
 			P1_EN => "1",
@@ -310,6 +315,7 @@ begin
 			puc_rst => puc_rst
 		);
 
+	-- @0x0100 -> @0x017F
 	timerA_0: omsp_timerA
 		port map(
 			irq_ta0 => irq_ta0,
@@ -342,6 +348,7 @@ begin
 			taclk => taclk
 		);
 
+	-- @0x0080 -> 0x0087
 	uart_0: omsp_uart
 		generic map (
 			-- Register base address (must be aligned to decoder bit width)
@@ -364,9 +371,26 @@ begin
 			uart_rxd => hw_uart_rxd
 		);
 
+	-- @0x0180 -> 0x0187
+	per_template_0: per_template
+	generic map (
+		-- Register base address (must be aligned to decoder bit width)
+		BASE_ADDR => 15x"0180"
+	)
+	port map (
+		per_dout => per_dout_template,
+	
+		mclk => mclk,
+		per_addr => per_addr,
+		per_din => per_din,
+		per_en => per_en,
+		per_we => per_we,
+		puc_rst => puc_rst
+	);
+
 	-- Combine peripheral data buses
 	---------------------------------
-	per_dout <= per_dout_dio or per_dout_tA or per_dout_uart;
+	per_dout <= per_dout_dio or per_dout_tA or per_dout_uart or per_dout_template;
 
 	-- Assign interrupts
 	---------------------------------
