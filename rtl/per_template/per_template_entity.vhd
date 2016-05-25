@@ -4,7 +4,7 @@ use ieee.std_logic_1164.all;
 entity per_template is
 	generic (
 		-- Register base address (must be aligned to decoder bit width)
-		BASE_ADDR : std_logic_vector(14 downto 0) := 15x"0190"
+		BASE_ADDR : std_logic_vector(14 downto 0) := 15x"0180"
 	);
 	port (
 		per_dout : out std_logic_vector(15 downto 0);  -- Peripheral data output

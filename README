@@ -22,13 +22,33 @@ Find TI's msp430 documentation
 ------------------------------
 http://www.ti.com/lit/ug/slau049f/slau049f.pdf
 
-Here is a description of the directories :
-------------------------------------------
+Here is a description of the directories
+----------------------------------------
 opencores/
 	contains the svn repositories of the sources from opencores
 rtl/
 	contains the HDL code of the architecture
+sim/
+	contains the modelsim simulation makefiles
 synt/
 	contains the synthesis projects for various FPGAs
 tools/
 	contains the different required tools.
+
+How to install Quartus and Modelsim
+-----------------------------------
+Installation:
+$ wget http://download.altera.com/akdlm/software/acdsinst/15.1/185/ib_tar/Quartus-lite-15.1.0.185-linux.tar
+(To compile stuff for the DE1, you need Quartus 13.0sp1. No documentation because it's temporary.)
+$ tar xvf Quartus-lite-15.1.0.185-linux.tar
+$ ./setup
+
+Launch Quartus:
+$ $QUARTUS_INSTALL_PATH/15.1/nios2eds/nios2_command_shell.sh #To deal with multiple installs
+$ quartus
+
+Launch Modelsim:
+$ sudo apt-get install libxft2:i386 #We're in 2016 yo!
+
+Add the following line in ~/.bashrc:
+$ export PATH=$PATH:/opt/altera_lite/15.1/modelsim_ase/bin

@@ -279,6 +279,7 @@ begin
 			wkup => '0'
 		);
 
+	-- @0x0000 -> 0x003F
 	c_gpio_0: omsp_gpio
 		generic map (
 			P1_EN => "1",
@@ -325,6 +326,7 @@ begin
 			puc_rst => puc_rst
 		);
 
+	-- @0x0100 -> @0x017F
 	timerA_0: omsp_timerA
 		port map(
 			irq_ta0 => irq_ta0,

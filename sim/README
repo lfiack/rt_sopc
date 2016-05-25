@@ -1,0 +1,36 @@
+rt_sopc/sim
+===========
+
+Simulation files (???) of the rt_sopc components.
+
+Creating a modelsim makefile:
+-----------------------------
+
+When the VHDL is written :
+
+Build the library and map in to "work" :
+$ vlib <library>
+$ vmap work $PWD/<library>
+$ vmap #check
+
+Compile the files one by one :
+$ vcom -2008 [-check_synthesis] <path to vhd>/<file.vhd>
+
+Once every file is compiled :
+$ vmake <library> > modelsim.make
+
+Simulate with modelsim:
+-----------------------
+Compile and run modelsim:
+$ make gui &
+
+Compile only:
+$ make
+
+Once in modelsim, you can find a prompt on the bottom. 
+To run the simulation:
+> run -all
+
+For any modification, type compile the project in your simulation directory ($ make), then in the modelsim prompt:
+> restart -f
+> run -all
