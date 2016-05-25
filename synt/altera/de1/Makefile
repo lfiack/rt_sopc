@@ -3,7 +3,7 @@ PRJ = rt_sopc_de1
 
 # Hardware variables
 ARGS = --read_settings_files=on --write_settings_files=off
-VHD	= $(wildcard *.vhd)
+VHD	= $(wildcard *.vhd ../../../rtl/*.vhd ../../../rtl/**/*.vhd)
 SDC	= $(wildcard *.sdc)
 BIN = $(wildcard ../../soft/bin/*.bin)
 
