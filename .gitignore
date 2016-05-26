@@ -19,7 +19,7 @@
 *.elf
 *.o
 
-sim/*/modelsim.ini
-sim/*/*_lib/
-sim/*/transcript
-sim/*/vsim.wlf
+sim/**/modelsim.ini
+sim/**/*_lib/
+sim/**/transcript
+sim/**/vsim.wlf

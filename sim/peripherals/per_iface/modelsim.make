@@ -24,32 +24,32 @@ SCCOM = sccom
 
 whole_library : $(LIB_PER_IFACE_LIB)/_lib.qdb
 
-$(LIB_PER_IFACE_LIB)/_lib.qdb : ../../rtl/pkg/math/log2_pkg.vhd \
+$(LIB_PER_IFACE_LIB)/_lib.qdb : ../../../rtl/pkg/math/log2_pkg.vhd \
 		$(IEEE__numeric_std) \
 		$(STD__textio) \
-		$(IEEE__std_logic_1164) ../../rtl/pkg/math/body/log2_pkg-body.vhd \
+		$(IEEE__std_logic_1164) ../../../rtl/pkg/math/body/log2_pkg-body.vhd \
 		$(PER_IFACE_LIB__log2_pkg) \
 		$(IEEE__numeric_std) \
 		$(STD__textio) \
-		$(IEEE__std_logic_1164) ../../rtl/per_iface/per_iface_entity.vhd \
+		$(IEEE__std_logic_1164) ../../../rtl/peripherals/per_iface/per_iface_entity.vhd \
 		$(PER_IFACE_LIB__per_iface_pkg) \
 		$(STD__textio) \
-		$(IEEE__std_logic_1164) ../../rtl/per_iface/per_iface_arch.vhd \
+		$(IEEE__std_logic_1164) ../../../rtl/peripherals/per_iface/per_iface_arch.vhd \
 		$(PER_IFACE_LIB__per_iface_pkg) \
 		$(PER_IFACE_LIB__per_iface) \
 		$(PER_IFACE_LIB__log2_pkg) \
 		$(IEEE__numeric_std) \
 		$(STD__textio) \
-		$(IEEE__std_logic_1164) ../../rtl/per_iface/per_iface_pkg.vhd \
+		$(IEEE__std_logic_1164) ../../../rtl/peripherals/per_iface/per_iface_pkg.vhd \
 		$(STD__textio) \
-		$(IEEE__std_logic_1164) ../../rtl/per_iface/per_iface_tb.vhd \
+		$(IEEE__std_logic_1164) ../../../rtl/peripherals/per_iface/per_iface_tb.vhd \
 		$(PER_IFACE_LIB__per_iface_pkg) \
 		$(STD__textio) \
 		$(IEEE__std_logic_1164)
-	$(VCOM) -work per_iface_lib -2008 ../../rtl/pkg/math/log2_pkg.vhd
-	$(VCOM) -work per_iface_lib -2008 ../../rtl/pkg/math/body/log2_pkg-body.vhd
-	$(VCOM) -work per_iface_lib -2008 ../../rtl/per_iface/per_iface_pkg.vhd
-	$(VCOM) -work per_iface_lib -2008 ../../rtl/per_iface/per_iface_entity.vhd
-	$(VCOM) -work per_iface_lib -2008 ../../rtl/per_iface/per_iface_arch.vhd
-	$(VCOM) -work per_iface_lib -2008 ../../rtl/per_iface/per_iface_tb.vhd
+	$(VCOM) -work per_iface_lib -2008 ../../../rtl/pkg/math/log2_pkg.vhd
+	$(VCOM) -work per_iface_lib -2008 ../../../rtl/pkg/math/body/log2_pkg-body.vhd
+	$(VCOM) -work per_iface_lib -2008 ../../../rtl/peripherals/per_iface/per_iface_pkg.vhd
+	$(VCOM) -work per_iface_lib -2008 ../../../rtl/peripherals/per_iface/per_iface_entity.vhd
+	$(VCOM) -work per_iface_lib -2008 ../../../rtl/peripherals/per_iface/per_iface_arch.vhd
+	$(VCOM) -work per_iface_lib -2008 ../../../rtl/peripherals/per_iface/per_iface_tb.vhd
 

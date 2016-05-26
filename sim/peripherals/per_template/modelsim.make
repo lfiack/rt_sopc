@@ -22,20 +22,20 @@ SCCOM = sccom
 
 whole_library : $(LIB_PER_TEMPLATE_LIB)/_lib.qdb
 
-$(LIB_PER_TEMPLATE_LIB)/_lib.qdb : ../../rtl/per_template/per_template_entity.vhd \
+$(LIB_PER_TEMPLATE_LIB)/_lib.qdb : ../../../rtl/peripherals/per_template/per_template_entity.vhd \
 		$(STD__textio) \
-		$(IEEE__std_logic_1164) ../../rtl/per_template/per_template_arch.vhd \
+		$(IEEE__std_logic_1164) ../../../rtl/peripherals/per_template/per_template_arch.vhd \
 		$(PER_TEMPLATE_LIB__per_template) \
 		$(IEEE__numeric_std) \
 		$(STD__textio) \
-		$(IEEE__std_logic_1164) ../../rtl/per_template/per_template_pkg.vhd \
+		$(IEEE__std_logic_1164) ../../../rtl/peripherals/per_template/per_template_pkg.vhd \
 		$(STD__textio) \
-		$(IEEE__std_logic_1164) ../../rtl/per_template/per_template_tb.vhd \
+		$(IEEE__std_logic_1164) ../../../rtl/peripherals/per_template/per_template_tb.vhd \
 		$(PER_TEMPLATE_LIB__per_template_pkg) \
 		$(STD__textio) \
 		$(IEEE__std_logic_1164)
-	$(VCOM) -work per_template_lib -2008 ../../rtl/per_template/per_template_entity.vhd
-	$(VCOM) -work per_template_lib -2008 ../../rtl/per_template/per_template_arch.vhd
-	$(VCOM) -work per_template_lib -2008 ../../rtl/per_template/per_template_pkg.vhd
-	$(VCOM) -work per_template_lib -2008 ../../rtl/per_template/per_template_tb.vhd
+	$(VCOM) -work per_template_lib -2008 ../../../rtl/peripherals/per_template/per_template_entity.vhd
+	$(VCOM) -work per_template_lib -2008 ../../../rtl/peripherals/per_template/per_template_arch.vhd
+	$(VCOM) -work per_template_lib -2008 ../../../rtl/peripherals/per_template/per_template_pkg.vhd
+	$(VCOM) -work per_template_lib -2008 ../../../rtl/peripherals/per_template/per_template_tb.vhd
 
