@@ -521,9 +521,21 @@ set_global_assignment -name VHDL_FILE ../../../rtl/pkg/openMSP430/openMSP430_pkg
 set_global_assignment -name VHDL_FILE ../../../rtl/pkg/openMSP430/omsp_timerA_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../rtl/pkg/openMSP430/omsp_gpio_pkg.vhd
 set_global_assignment -name VHDL_FILE ../../../rtl/pkg/openMSP430/omsp_uart_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/per_template/per_template_pkg.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/per_template/per_template_entity.vhd
-set_global_assignment -name VHDL_FILE ../../../rtl/per_template/per_template_arch.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/pkg/math/log2_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/pkg/math/body/log2_pkg-body.vhd
+
+set_global_assignment -name VHDL_FILE ../../../rtl/peripherals/per_iface/per_iface_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/peripherals/per_iface/per_iface_arch.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/peripherals/per_iface/per_iface_entity.vhd
+
+set_global_assignment -name VHDL_FILE ../../../rtl/peripherals/per_pwm/per_pwm_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/peripherals/per_pwm/per_pwm_arch.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/peripherals/per_pwm/per_pwm_entity.vhd
+
+set_global_assignment -name VHDL_FILE ../../../rtl/misc/pwm/pwm_pkg.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/misc/pwm/pwm_arch.vhd
+set_global_assignment -name VHDL_FILE ../../../rtl/misc/pwm/pwm_entity.vhd
+
 set_global_assignment -name VERILOG_FILE ../../../opencores/openmsp430/core/rtl/verilog/periph/template_periph_16b.v
 set_global_assignment -name VERILOG_FILE ../../../opencores/openmsp430/core/rtl/verilog/periph/template_periph_8b.v
 set_global_assignment -name VERILOG_FILE ../../../opencores/openmsp430/core/rtl/verilog/periph/omsp_timerA_undefines.v

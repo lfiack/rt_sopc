@@ -8,7 +8,7 @@ use work.omsp_gpio_pkg.all;
 use work.omsp_timerA_pkg.all;
 use work.omsp_uart_pkg.all;
 use work.omsp_ram_pkg.all;
-use work.per_template_pkg.all;
+use work.per_pwm_pkg.all;
 
 entity rt_sopc_de1 is
 	port (
@@ -176,8 +176,14 @@ architecture rtl of rt_sopc_de1 is
 	signal hw_uart_txd : std_logic;
 	signal hw_uart_rxd : std_logic;
 
-	-- Peripheral template
-	signal per_dout_template : std_logic_vector(15 downto 0);
+	-- PWM Modules
+	signal per_dout_pwm_0 : std_logic_vector(15 downto 0);
+	signal per_dout_pwm_1 : std_logic_vector(15 downto 0);
+
+	signal pwm_a_0 : std_logic;
+	signal pwm_b_0 : std_logic;
+	signal pwm_a_1 : std_logic;
+	signal pwm_b_1 : std_logic;
 begin
 	-- All inout port turn to tri-state
 	DRAM_DQ <= (others => 'Z');
@@ -185,12 +191,15 @@ begin
 	SD_DAT <= 'Z';
 	I2C_SDAT <= 'Z';
 
-	GPIO_0(0) <= ta_out0;
-	GPIO_0(1) <= ta_out0_en;
-	GPIO_0(2) <= ta_out1;
-	GPIO_0(3) <= ta_out1_en;
-	GPIO_0(4) <= ta_out2;
-	GPIO_0(5) <= ta_out2_en;
+	GPIO_0(0) <= pwm_a_0;
+	GPIO_0(2) <= pwm_b_0;
+	GPIO_0(4) <= pwm_a_1;
+	GPIO_0(6) <= pwm_b_1;
+
+	LEDG(0) <= pwm_a_0;
+	LEDG(1) <= pwm_b_0;
+	LEDG(2) <= pwm_a_1;
+	LEDG(3) <= pwm_b_1;
 
 	GPIO_0(GPIO_0'left downto 0) <= (others => 'Z');
 	GPIO_1 <= (others => 'Z');
@@ -371,26 +380,49 @@ begin
 			uart_rxd => hw_uart_rxd
 		);
 
-	-- @0x0180 -> 0x0187
-	per_template_0: per_template
+	-- @0x0100 -> 0x0107
+	per_pwm_0: per_pwm
 	generic map (
 		-- Register base address (must be aligned to decoder bit width)
 		BASE_ADDR => 15x"0180"
 	)
 	port map (
-		per_dout => per_dout_template,
+		per_dout => per_dout_pwm_0,
 	
 		mclk => mclk,
 		per_addr => per_addr,
 		per_din => per_din,
 		per_en => per_en,
 		per_we => per_we,
-		puc_rst => puc_rst
+		puc_rst => puc_rst,
+
+		pwm_a => pwm_a_0,
+		pwm_b => pwm_b_0
+	);
+
+	-- @0x0108 -> 0x010F
+	per_pwm_1: per_pwm
+	generic map (
+		-- Register base address (must be aligned to decoder bit width)
+		BASE_ADDR => 15x"0188"
+	)
+	port map (
+		per_dout => per_dout_pwm_1,
+	
+		mclk => mclk,
+		per_addr => per_addr,
+		per_din => per_din,
+		per_en => per_en,
+		per_we => per_we,
+		puc_rst => puc_rst,
+
+		pwm_a => pwm_a_1,
+		pwm_b => pwm_b_1
 	);
 
 	-- Combine peripheral data buses
 	---------------------------------
-	per_dout <= per_dout_dio or per_dout_tA or per_dout_uart or per_dout_template;
+	per_dout <= per_dout_dio or per_dout_tA or per_dout_uart or per_dout_pwm_0 or per_dout_pwm_1;
 
 	-- Assign interrupts
 	---------------------------------

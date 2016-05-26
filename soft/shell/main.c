@@ -161,6 +161,8 @@ int main(void) {
     cprintf("\r\nSimple Line Editor Ready\r\n");
 	cprintf("\r\nBAUD=%d\r\n", (CPU_FREQ_MHZ/115200)-1);
 
+	cprintf("\r\ntest=%c\r\n", 'x');
+
 	shell_add('w', sh_reg_write);
 	shell_add('r', sh_reg_read);
 
