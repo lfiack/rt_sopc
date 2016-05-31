@@ -33,7 +33,7 @@ int main(void) {
 
     cprintf("\r\n====== openMSP430 in action ======\r\n");   //say hello
     cprintf("\r\nSimple Line Editor Ready\r\n");
-	cprintf("\r\nBAUD=%d\r\n", (CPU_FREQ_MHZ/115200)-1);
+	cprintf("\r\nBAUD=%d\r\n", (CPU_FREQ_HZ/115200)-1);
 
     eint();                             // Enable interrupts
 

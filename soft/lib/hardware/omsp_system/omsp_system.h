@@ -35,7 +35,7 @@
 
 #include <in430.h>
 
-#define CPU_FREQ_MHZ 24000000l
+#define CPU_FREQ_HZ 24000000l
 
 //=============================================================================
 // STATUS REGISTER BITS

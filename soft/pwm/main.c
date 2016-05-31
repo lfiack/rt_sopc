@@ -8,6 +8,8 @@
 #include <hardware/omsp_system/omsp_system.h>
 #include <shell/shell/shell.h>
 
+#include <motion/pwm/pwm.h>
+
 // read uint16 separated by spaces (' ') in a buffer.
 // buf is the input buffer
 // returns a pointer on the next value to extract.
@@ -132,6 +134,11 @@ int sh_reg_read(char * buf) {
 	return 0;
 }
 
+int sh_pwm(char * buf) {
+	cprintf("Not implemented yet\n\r");
+	return 0;
+}
+
 //--------------------------------------------------//
 // Main function with init an an endless loop that  //
 // is synced with the interrupts trough the         //
@@ -142,6 +149,8 @@ int main(void) {
     int pos = 0;
     char buf[40];
     int led = 0;
+
+	pwm_t pwm_0;
 
     WDTCTL = WDTPW | WDTHOLD;           // Init watchdog timer
 
@@ -165,6 +174,10 @@ int main(void) {
 
 	shell_add('w', sh_reg_write);
 	shell_add('r', sh_reg_read);
+	shell_add('p', sh_pwm);
+
+	pwm_init(&pwm_0, 0x0180, 20000, 100);
+	pwm_enable(&pwm_0);
 
     eint();                             // Enable interrupts
 
